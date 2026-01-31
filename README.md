@@ -41,11 +41,19 @@ Modern Dual-Stack Architecture:
     ```bash
     python3 train_model.py
     ```
-3.  **Start API Server**
+3.  **Test Event Pricing Feature** (optional)
+    ```bash
+    python3 test_event_pricing.py
+    ```
+4.  **Start API Server**
     ```bash
     python3 api.py
     ```
     *API will run at http://localhost:8000*
+    
+    **New API Endpoints:**
+    - `POST /event-pricing` - Calculate dynamic pricing
+    - `GET /events/{city}` - Get local events
 
 ### Step 2: Frontend Setup
 1.  **Navigate to frontend**
@@ -63,9 +71,46 @@ Modern Dual-Stack Architecture:
     *Open http://localhost:4200 in your browser.*
 
 ## 5. File Structure
--   `api.py`: FastAPI Backend.
+-   `api.py`: FastAPI Backend with Event-Based Pricing.
+-   `event_service.py`: **NEW** - Event data fetching and pricing logic.
 -   `train_model.py`: ML Training Pipeline.
+-   `test_event_pricing.py`: **NEW** - Test suite for event pricing feature.
 -   `frontend/`: Angular Source Code.
-    -   `src/app/app.ts`: Main Component Logic.
-    -   `src/app/api.service.ts`: API Integration.
+    -   `src/app/app.ts`: Main Component Logic with Event Pricing.
+    -   `src/app/api.service.ts`: API Integration with Event Endpoints.
+    -   `src/app/event-pricing-styles.css`: **NEW** - Styles for event pricing UI.
 -   `traveler_data.csv`: Synthetic Dataset.
+
+## 6. **NEW FEATURE: Event-Based Dynamic Pricing** 🎭
+
+### Overview
+This hackathon project now includes an **AI-powered event-based pricing system** that automatically adjusts hotel rates based on local concerts, sports events, conferences, and other activities that drive demand.
+
+### Key Features
+- **Real-time Event Detection**: Integrates with Ticketmaster and Eventbrite APIs
+- **Smart Impact Analysis**: AI categorizes events by impact level (Low, Medium, High, Critical)
+- **Dynamic Pricing**: Automatically calculates optimal rate multipliers
+- **Interactive Dashboard**: Visual interface to explore events and pricing
+- **Multi-city Support**: Works across major US cities
+
+### API Endpoints
+- `POST /event-pricing`: Calculate dynamic pricing based on events
+- `GET /events/{city}`: Get local events for a specific city
+
+### How It Works
+1. **Event Discovery**: Fetches events from multiple APIs for selected dates
+2. **Impact Assessment**: AI analyzes event type, attendance, and proximity
+3. **Price Optimization**: Calculates multiplier based on demand impact
+4. **Real-time Updates**: Provides live pricing recommendations
+
+### Example Results
+- **Taylor Swift Concert**: +75% rate increase (Critical impact)
+- **Tech Conference**: +15% rate increase (Medium impact)  
+- **Local Sports Game**: +35% rate increase (High impact)
+- **No Events**: Base rate maintained
+
+### Business Value
+- **Revenue Optimization**: Capture demand surge during events
+- **Competitive Advantage**: Dynamic pricing vs fixed competitor rates
+- **Data-Driven Decisions**: AI-powered insights replace manual adjustments
+- **Market Responsiveness**: Real-time adaptation to local conditions

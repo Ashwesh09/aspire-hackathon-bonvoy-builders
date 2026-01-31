@@ -18,7 +18,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
 # Load Models and Services on Startup
 model_data = utils.load_models()
 event_service = EventService()

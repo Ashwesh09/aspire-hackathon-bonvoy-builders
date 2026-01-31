@@ -111,5 +111,121 @@
         </div>
       </div>
     </section>
+    <!-- Event-Based Dynamic Pricing -->
+    <section class="event-pricing-section">
+      <div class="divider"></div>
+      <h2>🎭 Event-Based Dynamic Pricing</h2>
+      <p class="subtitle">Optimize rates based on local events and concerts</p>
+      
+      <div class="pricing-controls">
+        <div class="form-row">
+          <div class="form-group">
+            <label>City</label>
+            <select [(ngModel)]="eventPricingForm.city" (change)="onEventPricingFormChange()">
+              <option *ngFor="let city of cities" [value]="city">{{city}}</option>
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label>Check-in Date</label>
+            <input type="date" [(ngModel)]="eventPricingForm.check_in_date" (change)="onEventPricingFormChange()">
+          </div>
+          
+          <div class="form-group">
+            <label>Check-out Date</label>
+            <input type="date" [(ngModel)]="eventPricingForm.check_out_date" (change)="onEventPricingFormChange()">
+          </div>
+          
+          <div class="form-group">
+            <label>Base Rate ($)</label>
+            <input type="number" [(ngModel)]="eventPricingForm.base_room_rate" (change)="onEventPricingFormChange()">
+          </div>
+        </div>
+      </div>
+
+      <div class="loading" *ngIf="loadingEventPricing">Analyzing local events...</div>
+
+      <!-- Pricing Results -->
+      <div class="pricing-results" *ngIf="eventPricing && !loadingEventPricing">
+        <div class="pricing-cards">
+          <div class="card pricing-card">
+            <div class="label">Original Rate</div>
+            <div class="value">${{eventPricing.original_rate}}</div>
+            <div class="desc">Base room rate</div>
+          </div>
+          
+          <div class="card pricing-card highlight">
+            <div class="label">Optimized Rate</div>
+            <div class="value">${{eventPricing.adjusted_rate}}</div>
+            <div class="desc" [ngClass]="{'positive': getPriceChangePercentage() > 0, 'negative': getPriceChangePercentage() < 0}">
+              {{getPriceChangePercentage() > 0 ? '+' : ''}}{{getPriceChangePercentage() | number:'1.1-1'}}% change
+            </div>
+          </div>
+          
+          <div class="card pricing-card">
+            <div class="label">Price Multiplier</div>
+            <div class="value">{{eventPricing.multiplier}}x</div>
+            <div class="desc">{{eventPricing.events_count}} events detected</div>
+          </div>
+          
+          <div class="card pricing-card">
+            <div class="label">Confidence Score</div>
+            <div class="value">{{eventPricing.confidence_score * 100 | number:'1.0-0'}}%</div>
+            <div class="desc">AI prediction accuracy</div>
+          </div>
+        </div>
+        
+        <div class="pricing-insight">
+          <h4>💡 Pricing Insight</h4>
+          <p>{{eventPricing.reason}}</p>
+          <div class="peak-event" *ngIf="eventPricing.peak_event_date">
+            <strong>Peak Event Date:</strong> {{eventPricing.peak_event_date | date:'mediumDate'}}
+          </div>
+        </div>
+      </div>
+
+      <!-- Local Events Display -->
+      <div class="events-section" *ngIf="cityEvents && !loadingEvents">
+        <div class="section-header">
+          <h3>🎪 Local Events ({{cityEvents.total_events}})</h3>
+          <button class="refresh-btn" (click)="loadCityEvents()" [disabled]="loadingEvents">
+            {{loadingEvents ? 'Loading...' : 'Refresh Events'}}
+          </button>
+        </div>
+        
+        <div class="events-grid" *ngIf="cityEvents.events.length > 0">
+          <div class="event-card" *ngFor="let event of cityEvents.events">
+            <div class="event-header">
+              <h4>{{event.name}}</h4>
+              <span class="impact-badge" [style.background-color]="getImpactLevelColor(event.impact_level)">
+                {{event.impact_level | titlecase}}
+              </span>
+            </div>
+            <div class="event-details">
+              <div class="detail">
+                <span class="icon">📅</span>
+                <span>{{event.date | date:'short'}}</span>
+              </div>
+              <div class="detail">
+                <span class="icon">📍</span>
+                <span>{{event.venue}}</span>
+              </div>
+              <div class="detail">
+                <span class="icon">🎭</span>
+                <span>{{event.category}}</span>
+              </div>
+              <div class="detail">
+                <span class="icon">👥</span>
+                <span>{{event.expected_attendance | number}} attendees</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="no-events" *ngIf="cityEvents.events.length === 0">
+          <p>No major events found for the selected dates in {{eventPricingForm.city}}.</p>
+        </div>
+      </div>
+    </section>
   </main>
 </div>

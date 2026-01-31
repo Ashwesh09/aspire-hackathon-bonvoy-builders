@@ -8,7 +8,7 @@ import { ApiService, TravelerProfile, PredictionResponse, OfferResponse, EventPr
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './app.html',
-  styleUrl: './app.css'
+  styleUrls: ['./app.css', './event-pricing-styles.css']
 })
 export class App {
   // Input State
@@ -47,7 +47,11 @@ export class App {
   
   cities = ['New York', 'Los Angeles', 'Chicago', 'Miami', 'Las Vegas', 'San Francisco', 'Boston', 'Seattle'];
 
-  constructor(private api: ApiService) { }
+  constructor(private api: ApiService) {
+    // Initialize event pricing on load
+    this.calculateEventPricing();
+    this.loadCityEvents();
+  }
 
   // Triggered when sidebar inputs change
   onProfileChange() {
