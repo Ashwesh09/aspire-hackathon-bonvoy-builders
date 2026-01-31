@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 export interface TravelerProfile {
@@ -85,7 +85,10 @@ export class ApiService {
     }
 
     getCityEvents(city: string, date?: string): Observable<EventsResponse> {
-        const params = date ? { date } : {};
+        let params = new HttpParams();
+        if (date) {
+            params = params.set('date', date);
+        }
         return this.http.get<EventsResponse>(`${this.apiUrl}/events/${city}`, { params });
     }
 }
