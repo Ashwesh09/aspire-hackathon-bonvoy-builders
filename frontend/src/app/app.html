@@ -1,0 +1,115 @@
+<div class="container">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="brand">
+      <span class="icon">🏨</span>
+      <h2>Harriot Experience</h2>
+    </div>
+    
+    <div class="controls">
+      <h3>Traveler Context Simulator</h3>
+      <p class="subtitle">Simulate guest arrival</p>
+
+      <div class="form-group">
+        <label>Age</label>
+        <input type="range" min="18" max="90" [(ngModel)]="profile.age" (change)="onProfileChange()">
+        <span class="value">{{profile.age}}</span>
+      </div>
+
+      <div class="form-group">
+        <label>Loyalty Tier</label>
+        <select [(ngModel)]="profile.loyalty_tier" (change)="onProfileChange()">
+          <option *ngFor="let t of tiers" [value]="t">{{t}}</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Avg Spend ($)</label>
+        <input type="number" [(ngModel)]="profile.avg_spend" (change)="onProfileChange()">
+      </div>
+
+      <div class="form-group">
+        <label>Days Since Last Stay</label>
+        <input type="number" [(ngModel)]="profile.last_stay_days_ago" (change)="onProfileChange()">
+      </div>
+
+      <div class="form-group">
+        <label>Trip Purpose</label>
+        <div class="radio-group">
+          <label *ngFor="let p of purposes">
+            <input type="radio" name="purpose" [value]="p" [(ngModel)]="profile.travel_purpose" (change)="onProfileChange()"> {{p}}
+          </label>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Known Preferences</label>
+        <div class="checkbox-group">
+          <label *ngFor="let a of amenitiesList">
+            <input type="checkbox" [checked]="isAmenitySelected(a)" (change)="toggleAmenity(a, $event)"> {{a}}
+          </label>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="content">
+    <header>
+      <h1>Intelligent Experience Engine</h1>
+      <div class="status-badge">AI Online 🟢</div>
+    </header>
+
+    <!-- Analytics Dashboard -->
+    <section class="dashboard" *ngIf="prediction">
+      <div class="card metric-card">
+        <div class="label">Predicted Micro-Segment</div>
+        <div class="value highlight">{{prediction.segment_label}}</div>
+        <div class="desc">Based on behavior & spend</div>
+      </div>
+
+      <div class="card metric-card">
+        <div class="label">Conversion Probability</div>
+        <div class="value">{{prediction.booking_probability | percent:'1.0-1'}}</div>
+        <div class="desc" [ngClass]="{'high': prediction.booking_probability > 0.7, 'med': prediction.booking_probability > 0.4}">
+          {{prediction.booking_probability > 0.7 ? 'High Potential' : 'Medium Potential'}}
+        </div>
+      </div>
+
+      <div class="card metric-card">
+        <div class="label">Est. Lifetime Value</div>
+        <div class="value">${{prediction.estimated_ltv | number:'1.0-0'}}</div>
+        <div class="desc">Yearly Projection</div>
+      </div>
+    </section>
+
+    <div class="loading" *ngIf="loadingPrediction">Analyzing profile...</div>
+
+    <!-- Offer Engine -->
+    <section class="offer-engine" *ngIf="prediction">
+      <div class="divider"></div>
+      <h2>💡 Dynamic Offer Generation</h2>
+      
+      <button class="generate-btn" (click)="generateOffer()" [disabled]="loadingOffer">
+        {{ loadingOffer ? 'Crafting Offer...' : 'Generate Personalized Offer' }}
+      </button>
+
+      <div class="offer-result fade-in" *ngIf="offer">
+        <div class="offer-image">
+          <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&auto=format&fit=crop&w=1170&q=80" alt="Luxury Hotel">
+        </div>
+        <div class="offer-details">
+          <h3>✨ {{offer.offer_name}}</h3>
+          <blockquote class="copy">
+            "{{offer.copy}}"
+          </blockquote>
+          <div class="offer-meta">
+            <span>Targeting <strong>{{prediction.segment_label}}</strong></span>
+            <span>Boost: <strong>+15%</strong> Conversion</span>
+          </div>
+          <button class="send-btn">Send to Guest App 📱</button>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
