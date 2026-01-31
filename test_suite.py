@@ -2,6 +2,8 @@ import unittest
 import utils
 import os
 import joblib
+from cdp_service import CDPService
+from email_service import EmailService
 
 class TestHarriotAI(unittest.TestCase):
     def setUp(self):
@@ -43,6 +45,29 @@ class TestHarriotAI(unittest.TestCase):
         # if Luxury -> Private Villa
         # if Business Purpose -> "Experience seamless productivity"
         self.assertIn("Experience seamless productivity", copy)
+
+    def test_cdp_service(self):
+        cdp = CDPService()
+        # Ensure it doesn't crash
+        try:
+            audience = cdp.get_at_risk_business_travelers()
+            print(f"CDP Audience Size: {len(audience)}")
+            self.assertIsInstance(audience, list)
+            if len(audience) > 0:
+                first = audience[0]
+                self.assertIn('email', first)
+                self.assertIn('home_city', first)
+        except Exception as e:
+            self.fail(f"CDP Service failed: {e}")
+
+    def test_email_service(self):
+        email_svc = EmailService()
+        recipients = [{'email': 'test@example.com', 'name': 'Tester'}]
+        result = email_svc.send_campaign(recipients, "Test Subject", "Test Body")
+        
+        self.assertEqual(result['status'], 'completed')
+        self.assertEqual(result['sent_count'], 1)
+        self.assertEqual(result['details'][0]['email'], 'test@example.com')
 
 if __name__ == '__main__':
     unittest.main()

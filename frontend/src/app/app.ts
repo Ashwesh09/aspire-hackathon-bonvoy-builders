@@ -1,17 +1,19 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ApiService, TravelerProfile, PredictionResponse, OfferResponse, EventPricingRequest, EventPricingResponse, EventsResponse } from './api.service';
+import { ApiService, TravelerProfile, PredictionResponse, OfferResponse, EventPricingRequest, EventPricingResponse, EventsResponse, AudienceStats, AudienceMember, CampaignSendRequest } from './api.service';
 
 @Component({
   selector: 'app-root',
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './app.html',
-  styleUrls: ['./app.css', './event-pricing-styles.css']
+  styleUrls: ['./app.css', './event-pricing-styles.css', './campaign.css']
 })
 export class App {
   // Input State
+  activeTab = 'simulation'; // 'simulation', 'pricing', 'campaigns'
+
   profile: TravelerProfile = {
     age: 35,
     loyalty_tier: 'Silver',
@@ -36,7 +38,7 @@ export class App {
   cityEvents: EventsResponse | null = null;
   loadingEventPricing = false;
   loadingEvents = false;
-  
+
   // Event Pricing Form
   eventPricingForm = {
     city: 'New York',
@@ -44,7 +46,7 @@ export class App {
     check_out_date: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
     base_room_rate: 299
   };
-  
+
   cities = ['New York', 'Los Angeles', 'Chicago', 'Miami', 'Las Vegas', 'San Francisco', 'Boston', 'Seattle'];
 
   constructor(private api: ApiService) {
@@ -160,5 +162,65 @@ export class App {
       case 'low': return '#2ed573';
       default: return '#747d8c';
     }
+  }
+
+  // Smart Campaigns Methods
+  campaignStats: AudienceStats | null = null;
+  campaignAudience: AudienceMember[] = [];
+  campaignOffer: OfferResponse | null = null;
+  campaignResult: any = null;
+  loadingCampaign = false;
+  sendingCampaign = false;
+
+  loadAudience() {
+    this.loadingCampaign = true;
+    this.api.getCampaignAudience().subscribe({
+      next: (res) => {
+        this.campaignStats = res.stats;
+        this.campaignAudience = res.audience;
+        this.loadingCampaign = false;
+      },
+      error: (err) => {
+        console.error('Failed to load audience', err);
+        this.loadingCampaign = false;
+      }
+    });
+  }
+
+  generateCampaignOffer() {
+    this.loadingOffer = true;
+    // Hardcoded for "Business" segment for this specific campaign type
+    this.api.generateOffer('Business Elite', 'Business').subscribe({
+      next: (res) => {
+        this.campaignOffer = res;
+        this.loadingOffer = false;
+      },
+      error: (err) => {
+        console.error('Failed to generate offer', err);
+        this.loadingOffer = false;
+      }
+    });
+  }
+
+  sendCampaign() {
+    if (!this.campaignOffer || !this.campaignAudience.length) return;
+
+    this.sendingCampaign = true;
+    const req: CampaignSendRequest = {
+      subject: `Exclusive Q2 Offer: ${this.campaignOffer.offer_name}`,
+      body: this.campaignOffer.copy,
+      recipients: this.campaignAudience
+    };
+
+    this.api.sendCampaign(req).subscribe({
+      next: (res) => {
+        this.campaignResult = res;
+        this.sendingCampaign = false;
+      },
+      error: (err) => {
+        console.error('Failed to send campaign', err);
+        this.sendingCampaign = false;
+      }
+    });
   }
 }

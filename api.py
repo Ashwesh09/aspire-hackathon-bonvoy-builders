@@ -4,6 +4,8 @@ import utils
 import pandas as pd
 from fastapi.middleware.cors import CORSMiddleware
 from event_service import EventService, PricingAdjustment
+from cdp_service import CDPService
+from email_service import EmailService
 from datetime import datetime, timedelta
 from typing import Optional
 
@@ -21,6 +23,8 @@ app.add_middleware(
 # Load Models and Services on Startup
 model_data = utils.load_models()
 event_service = EventService()
+cdp_service = CDPService()
+email_service = EmailService()
 
 class TravelerProfile(BaseModel):
     age: int
@@ -173,6 +177,34 @@ def get_city_events(city: str, date: Optional[str] = None):
         raise HTTPException(status_code=400, detail=f"Invalid date format: {e}")
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error fetching events: {e}")
+
+class CampaignRequest(BaseModel):
+    subject: str
+    body: str
+    recipients: list
+
+@app.get("/campaigns/audiences/q2-business-local")
+def get_q2_business_local_audience():
+    """Get business travelers within 200 miles with no Q2 booking."""
+    try:
+        audience = cdp_service.get_at_risk_business_travelers()
+        stats = cdp_service.get_audience_stats()
+        return {
+            "audience": audience,
+            "stats": stats
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/campaigns/send")
+def send_campaign(req: CampaignRequest):
+    """Send email campaign to recipients."""
+    try:
+        result = email_service.send_campaign(req.recipients, req.subject, req.body)
+        return result
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 
 if __name__ == "__main__":
     import uvicorn

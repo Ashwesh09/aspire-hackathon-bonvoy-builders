@@ -113,4 +113,21 @@ This hackathon project now includes an **AI-powered event-based pricing system**
 - **Revenue Optimization**: Capture demand surge during events
 - **Competitive Advantage**: Dynamic pricing vs fixed competitor rates
 - **Data-Driven Decisions**: AI-powered insights replace manual adjustments
-- **Market Responsiveness**: Real-time adaptation to local conditions
+
+## 7. Target Audience & User Personas 👥
+This tool is designed to empower three distinct roles within the hotel ecosystem:
+
+### 1. Revenue Manager (Primary User - Strategic)
+-   **Goal**: Maximize RevPAR (Revenue Per Available Room) and optimize yield.
+-   **Usage**: Uses the **Event Pricing Dashboard** to monitor upcoming demand surges (e.g., Taylor Swift concert) and approve dynamic rate adjustments.
+-   **Benefit**: Replaces manual spreadsheet analysis with AI-driven confidence scores.
+
+### 2. Front Desk Agent (Secondary User - Operational)
+-   **Goal**: Increase guest satisfaction and ancillary revenue during check-in.
+-   **Usage**: Uses the **Traveler Simulator/Copilot** to instantly identify a guest's micro-segment (e.g., "Luxury Elite") and confidently pitch the *right* paid upgrade (e.g., "Private Villa").
+-   **Benefit**: Removes the awkwardness of upselling by providing a data-backed script.
+
+### 3. Marketing Manager (Tertiary User - Tactical)
+-   **Goal**: Drive engagement through personalized campaigns.
+-   **Usage**: Uses the **GenAI Copy Generator** to craft hyper-personalized email offers for pre-arrival sequences.
+-   **Benefit**: Scales "concierge-level" communication to thousands of guests.

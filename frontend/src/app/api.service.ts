@@ -61,6 +61,34 @@ export interface EventsResponse {
     total_events: number;
 }
 
+
+export interface AudienceMember {
+    email: string;
+    loyalty_tier: string;
+    home_city: string;
+    distance_miles: number;
+    last_stay_days_ago: number;
+    avg_spend: number;
+}
+
+export interface AudienceStats {
+    audience_count: number;
+    potential_revenue: number;
+    segments: string[];
+    criteria: string;
+}
+
+export interface CampaignResponse {
+    audience: AudienceMember[];
+    stats: AudienceStats;
+}
+
+export interface CampaignSendRequest {
+    subject: string;
+    body: string;
+    recipients: AudienceMember[];
+}
+
 @Injectable({
     providedIn: 'root'
 })
@@ -90,5 +118,13 @@ export class ApiService {
             params = params.set('date', date);
         }
         return this.http.get<EventsResponse>(`${this.apiUrl}/events/${city}`, { params });
+    }
+
+    getCampaignAudience(): Observable<CampaignResponse> {
+        return this.http.get<CampaignResponse>(`${this.apiUrl}/campaigns/audiences/q2-business-local`);
+    }
+
+    sendCampaign(request: CampaignSendRequest): Observable<any> {
+        return this.http.post<any>(`${this.apiUrl}/campaigns/send`, request);
     }
 }
