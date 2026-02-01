@@ -4,7 +4,7 @@
   background: white;
   padding: 2rem;
   border-radius: 16px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
 .pricing-controls {
@@ -14,8 +14,85 @@
 .form-row {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 1rem;
-  margin-bottom: 1rem;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.control-input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 1rem;
+  color: #2d3748;
+  background-color: #f7fafc;
+  transition: all 0.2s;
+}
+
+.control-input:focus {
+  outline: none;
+  border-color: #667eea;
+  background-color: white;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.action-row {
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+.calculate-btn {
+  background: linear-gradient(135deg, #FF5A5F 0%, #FF2E35 100%);
+  color: white;
+  border: none;
+  padding: 1rem 3rem;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 1.1rem;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(255, 90, 95, 0.4);
+  transition: all 0.3s ease;
+  min-width: 250px;
+}
+
+.calculate-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(255, 90, 95, 0.5);
+}
+
+.calculate-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+  filter: grayscale(100%);
+}
+
+.refresh-btn {
+  background: white;
+  border: 1px solid #e2e8f0;
+  color: #4a5568;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.refresh-btn:hover {
+  background: #f7fafc;
+  color: #2d3748;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+  border-color: #cbd5e0;
+}
+
+.refresh-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
 }
 
 .pricing-cards {
@@ -206,26 +283,26 @@
   .form-row {
     grid-template-columns: 1fr;
   }
-  
+
   .pricing-cards {
     grid-template-columns: repeat(2, 1fr);
   }
-  
+
   .events-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .section-header {
     flex-direction: column;
     gap: 1rem;
     align-items: stretch;
   }
-  
+
   .event-header {
     flex-direction: column;
     gap: 0.5rem;
   }
-  
+
   .event-header h4 {
     margin-right: 0;
   }

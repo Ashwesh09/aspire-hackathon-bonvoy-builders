@@ -67,62 +67,66 @@
       <div class="status-badge">AI Online 🟢</div>
     </header>
 
-    <!-- Analytics Dashboard -->
-    <section class="dashboard" *ngIf="prediction">
-      <div class="card metric-card">
-        <div class="label">Predicted Micro-Segment</div>
-        <div class="value highlight">{{prediction.segment_label}}</div>
-        <div class="desc">Based on behavior & spend</div>
-      </div>
-
-      <div class="card metric-card">
-        <div class="label">Conversion Probability</div>
-        <div class="value">{{prediction.booking_probability | percent:'1.0-1'}}</div>
-        <div class="desc"
-          [ngClass]="{'high': prediction.booking_probability > 0.7, 'med': prediction.booking_probability > 0.4}">
-          {{prediction.booking_probability > 0.7 ? 'High Potential' : 'Medium Potential'}}
+    <!-- Simulation Tab Content -->
+    <div *ngIf="activeTab === 'simulation'">
+      <!-- Analytics Dashboard -->
+      <section class="dashboard" *ngIf="prediction">
+        <div class="card metric-card">
+          <div class="label">Predicted Micro-Segment</div>
+          <div class="value highlight">{{prediction.segment_label}}</div>
+          <div class="desc">Based on behavior & spend</div>
         </div>
-      </div>
 
-      <div class="card metric-card">
-        <div class="label">Est. Lifetime Value</div>
-        <div class="value">${{prediction.estimated_ltv | number:'1.0-0'}}</div>
-        <div class="desc">Yearly Projection</div>
-      </div>
-    </section>
-
-    <div class="loading" *ngIf="loadingPrediction">Analyzing profile...</div>
-
-    <!-- Offer Engine -->
-    <section class="offer-engine" *ngIf="prediction">
-      <div class="divider"></div>
-      <h2>💡 Dynamic Offer Generation</h2>
-
-      <button class="generate-btn" (click)="generateOffer()" [disabled]="loadingOffer">
-        {{ loadingOffer ? 'Crafting Offer...' : 'Generate Personalized Offer' }}
-      </button>
-
-      <div class="offer-result fade-in" *ngIf="offer">
-        <div class="offer-image">
-          <img
-            src="https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&auto=format&fit=crop&w=1170&q=80"
-            alt="Luxury Hotel">
-        </div>
-        <div class="offer-details">
-          <h3>✨ {{offer.offer_name}}</h3>
-          <blockquote class="copy">
-            "{{offer.copy}}"
-          </blockquote>
-          <div class="offer-meta">
-            <span>Targeting <strong>{{prediction.segment_label}}</strong></span>
-            <span>Boost: <strong>+15%</strong> Conversion</span>
+        <div class="card metric-card">
+          <div class="label">Conversion Probability</div>
+          <div class="value">{{prediction.booking_probability | percent:'1.0-1'}}</div>
+          <div class="desc"
+            [ngClass]="{'high': prediction.booking_probability > 0.7, 'med': prediction.booking_probability > 0.4}">
+            {{prediction.booking_probability > 0.7 ? 'High Potential' : 'Medium Potential'}}
           </div>
-          <button class="send-btn">Send to Guest App 📱</button>
         </div>
-      </div>
-    </section>
+
+        <div class="card metric-card">
+          <div class="label">Est. Lifetime Value</div>
+          <div class="value">${{prediction.estimated_ltv | number:'1.0-0'}}</div>
+          <div class="desc">Yearly Projection</div>
+        </div>
+      </section>
+
+      <div class="loading" *ngIf="loadingPrediction">Analyzing profile...</div>
+
+      <!-- Offer Engine -->
+      <section class="offer-engine" *ngIf="prediction">
+        <div class="divider"></div>
+        <h2>💡 Dynamic Offer Generation</h2>
+
+        <button class="generate-btn" (click)="generateOffer()" [disabled]="loadingOffer">
+          {{ loadingOffer ? 'Crafting Offer...' : 'Generate Personalized Offer' }}
+        </button>
+
+        <div class="offer-result fade-in" *ngIf="offer">
+          <div class="offer-image">
+            <img
+              src="https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&auto=format&fit=crop&w=1170&q=80"
+              alt="Luxury Hotel">
+          </div>
+          <div class="offer-details">
+            <h3>✨ {{offer.offer_name}}</h3>
+            <blockquote class="copy">
+              "{{offer.copy}}"
+            </blockquote>
+            <div class="offer-meta">
+              <span>Targeting <strong>{{prediction.segment_label}}</strong></span>
+              <span>Boost: <strong>+15%</strong> Conversion</span>
+            </div>
+            <button class="send-btn">Send to Guest App 📱</button>
+          </div>
+        </div>
+      </section>
+    </div>
+
     <!-- Event-Based Dynamic Pricing -->
-    <section class="event-pricing-section">
+    <section class="event-pricing-section" *ngIf="activeTab === 'pricing'">
       <div class="divider"></div>
       <h2>🎭 Event-Based Dynamic Pricing</h2>
       <p class="subtitle">Optimize rates based on local events and concerts</p>
@@ -131,25 +135,31 @@
         <div class="form-row">
           <div class="form-group">
             <label>City</label>
-            <select [(ngModel)]="eventPricingForm.city" (change)="onEventPricingFormChange()">
+            <select [(ngModel)]="eventPricingForm.city" class="control-input">
               <option *ngFor="let city of cities" [value]="city">{{city}}</option>
             </select>
           </div>
 
           <div class="form-group">
             <label>Check-in Date</label>
-            <input type="date" [(ngModel)]="eventPricingForm.check_in_date" (change)="onEventPricingFormChange()">
+            <input type="date" [(ngModel)]="eventPricingForm.check_in_date" class="control-input">
           </div>
 
           <div class="form-group">
             <label>Check-out Date</label>
-            <input type="date" [(ngModel)]="eventPricingForm.check_out_date" (change)="onEventPricingFormChange()">
+            <input type="date" [(ngModel)]="eventPricingForm.check_out_date" class="control-input">
           </div>
 
           <div class="form-group">
             <label>Base Rate ($)</label>
-            <input type="number" [(ngModel)]="eventPricingForm.base_room_rate" (change)="onEventPricingFormChange()">
+            <input type="number" [(ngModel)]="eventPricingForm.base_room_rate" class="control-input">
           </div>
+        </div>
+
+        <div class="action-row">
+          <button class="calculate-btn" (click)="calculateEventPricing()" [disabled]="loadingEventPricing">
+            {{ loadingEventPricing ? 'Calculating...' : 'Calculate Optimized Rates ⚡' }}
+          </button>
         </div>
       </div>
 
@@ -246,6 +256,16 @@
       <p class="subtitle">Reach high-potential travelers with AI-driven email offers</p>
 
       <div class="campaign-dashboard">
+        <!-- Initial Empty State -->
+        <div class="empty-state-card" *ngIf="!campaignStats">
+          <div class="icon-large">📡</div>
+          <h3>Identify Opportunity</h3>
+          <p>Scan for local business travelers who haven't booked for Q2 yet.</p>
+          <button class="primary-btn" (click)="loadAudience()" [disabled]="loadingCampaign">
+            {{loadingCampaign ? 'Scanning Database...' : '🔍 Scan Local Market'}}
+          </button>
+        </div>
+
         <!-- Audience Insight -->
         <div class="audience-card" *ngIf="campaignStats">
           <h3>🎯 Audience Insight: {{campaignStats.criteria}}</h3>
